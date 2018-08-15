@@ -58,6 +58,33 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+  function playSound(evt) {
+    const audio = document.querySelector(`audio[data-key="${evt.keyCode}"]`);
+    const key = document.querySelector(`.key[data-key="${evt.keyCode}"]`);
+    if (!audio) return;
+    // each sound clip is ~2s long; rewind the audio on every key press
+    // otherwise if you hit the same key again very quickly
+    // it won't do anything because the audio's still playing
+    audio.currentTime = 0;
+    audio.play();
+    // adding the class 'playing' will start the css animation
+    key.classList.add('playing');
+  }
+
+  function resetKey(evt) {
+    // this event is fired for each of the css properties that change in the animation
+    if (evt.propertyName !== 'transform') return;
+    // in addEventListener, this is implicitly bound to key
+    // but why does this point to the key in resetKey ?
+    // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#As_a_DOM_event_handler
+    // When a function is used as an event handler, its this is set to the element the event fired from
+    this.classList.remove('playing');
+    // evt.target.classList.remove('playing');
+  }
+
+  window.addEventListener('keydown', playSound);
+  const keys = document.querySelectorAll('.key');
+  keys.forEach(key => key.addEventListener('transitionend', resetKey));
 
 </script>
 
