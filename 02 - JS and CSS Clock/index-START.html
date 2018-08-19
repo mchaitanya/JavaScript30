@@ -62,13 +62,43 @@
       background:black;
       position: absolute;
       top:50%;
+      /* move the pivot for rotation to the right end*/
+      transform-origin: 100%; 
+      /* rotate the divs clockwise 
+       * from the horizontal position at 9 o'clock 
+       * up to to the vertical position at 12 o'clock */ 
+      transform: rotate(90deg); 
+      /* this easing function makes the hand 
+       * go a little bit past its final position
+       * and then snap back into place for a 'ticking' effect */
+      transition: all .05s cubic-bezier(0.1, 2.7, 0.58, 1);
     }
 
   </style>
 
   <script>
+    const secondsHand = document.querySelector('.second-hand');
+    const minutesHand = document.querySelector('.min-hand');
+    const hoursHand = document.querySelector('.hour-hand');
 
+    function updateClock() {
+      const now = new Date();
+      // rotate the seconds hand
+      const seconds = now.getSeconds();
+      const secondsAngle = ((seconds/60) * 360) + 90; // remember to offset by 90 to start from 12 o'clock
+      secondsHand.style.transform = `rotate(${secondsAngle}deg)`;
+      // rotate the minutes hand
+      const minutes = now.getMinutes();
+      const minutesAngle = ((minutes/60) * 360) + 90;
+      minutesHand.style.transform = `rotate(${minutesAngle}deg)`;
+      // rotate the hours hand
+      const hours = now.getHours();
+      const hoursAngle = ((hours/12) * 360) + 90;
+      hoursHand.style.transform = `rotate(${hoursAngle}deg)`;
+    }
 
+    setInterval(updateClock, 1000);
+    
   </script>
 </body>
 </html>
